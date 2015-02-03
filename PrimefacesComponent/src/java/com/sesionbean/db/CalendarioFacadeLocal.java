@@ -16,18 +16,18 @@ import javax.ejb.Local;
 @Local
 public interface CalendarioFacadeLocal {
 
-    void create(Calendario calendario);
+    void create(Calendario calendario); //addEvent
 
-    void edit(Calendario calendario);
+    void edit(Calendario calendario); //updateEvent
 
-    void remove(Calendario calendario);
+    void remove(Calendario calendario); //deleteEvent
 
-    Calendario find(Object id);
+    Calendario find(Object id); //ScheduleEvent : Seleccion por item event
 
-    List<Calendario> findAll();
+    List<Calendario> findAll(); //getEvents
 
-    List<Calendario> findRange(int[] range);
+    List<Calendario> findRange(int[] range); // buscar por rango de numeros
 
-    int count();
+    int count(); //getEventCount
     
 }

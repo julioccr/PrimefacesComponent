@@ -5,10 +5,14 @@
  */
 package com.controller;
 
+import com.entidad.jpa.db.Calendario;
+import com.sesionbean.db.CalendarioFacade;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -33,7 +37,13 @@ import org.primefaces.model.ScheduleModel;
 public class calendarioController  implements Serializable{
  
    
-
+    private Calendario calendarioEvento = new Calendario();
+    
+    @EJB 
+    private CalendarioFacade calendarEJB;
+    
+    private List<Calendario> ListCalendarioEvento;
+    
  
     private ScheduleModel eventModel;
      
@@ -43,12 +53,13 @@ public class calendarioController  implements Serializable{
  
     @PostConstruct
     public void init() {
-        eventModel = new DefaultScheduleModel();
-        eventModel.addEvent(new DefaultScheduleEvent("Proyecto Comerciales Vasquez", previousDay8Pm(), previousDay11Pm()));
+        //eventModel = new DefaultScheduleModel();
+        
+        /*eventModel.addEvent(new DefaultScheduleEvent("Proyecto Comerciales Vasquez", previousDay8Pm(), previousDay11Pm()));
         eventModel.addEvent(new DefaultScheduleEvent("Estudios Traumatologicos", today1Pm(), today6Pm()));
         eventModel.addEvent(new DefaultScheduleEvent("Conferencia en la UNFE", nextDay9Am(), nextDay11Am()));
         eventModel.addEvent(new DefaultScheduleEvent("Gestion y Planificacion en Niveles de Seguridad Educacional", theDayAfter3Pm(), fourDaysLater3pm()));
-         
+         */
         lazyEventModel = new LazyScheduleModel() {
              
             @Override
@@ -178,7 +189,59 @@ public class calendarioController  implements Serializable{
          
         event = new DefaultScheduleEvent();
     }
-     
+    
+    //Crear Evento en la base de datos o Actualizar en caso de que exista
+    public void AgregarEvento(ActionEvent actionEvent){
+    //si el evento no existe, crearlo entity manager
+        FacesMessage  msg ;
+    if(calendarioEvento.getId() == null)
+    {
+    //procede a crearlo   
+    calendarEJB.create(calendarioEvento);
+     msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "El Evento :" + calendarioEvento.getEvento()+ " Fue Creado con Exito", " ");
+        addMessage(msg);
+    //si existe, entonces actualizalo
+    }else{
+        //procede a actualizar el evento
+    calendarEJB.edit(calendarioEvento);
+    msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "El Evento :" + calendarioEvento.getEvento()+ " Fue Actualizado con Exito", " ");
+        addMessage(msg);
+    }
+    
+    
+    }
+    
+    
+    //Lista de Evento en el Calendario
+
+    public List<Calendario> getListCalendarioEvento() {
+       
+                return calendarEJB.findAll();
+    }
+
+    public void setListCalendarioEvento(List<Calendario> ListCalendarioEvento) {
+        this.ListCalendarioEvento = ListCalendarioEvento;
+    }
+    
+    
+    
+    public void eliminarEvento (ActionEvent actionEvent) {
+     FacesMessage  msg ;
+        
+        if(calendarioEvento.getId() != null) {
+       
+      calendarEJB.remove(calendarioEvento);
+      msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "El Evento :" + calendarioEvento.getEvento()+ " Fue Eliminado con Exito", " ");
+        addMessage(msg);
+    }
+    else{
+     msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "El Evento no existe para ser eliminado"," ");
+        addMessage(msg);
+    
+    }
+    
+    } 
+    
     public void onEventSelect(SelectEvent selectEvent) {
         event = (ScheduleEvent) selectEvent.getObject();
     }

@@ -27,5 +27,8 @@ public class CalendarioFacade extends AbstractFacade<Calendario> implements Cale
     public CalendarioFacade() {
         super(Calendario.class);
     }
+
+    
+   
     
 }
