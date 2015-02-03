@@ -24,7 +24,7 @@
  
     <h:panelGrid columnClasses="value">
         <h3 style="margin-top: 0">Calendario de Evento</h3>
-        <p:schedule id="schedule" value="#{calendarioController.eventModel}" widgetVar="myschedule"   locale="es">
+        <p:schedule id="schedule" value="#{calendarioController.eventModel}" widgetVar="myschedule"    locale="es">
  
             <p:ajax event="dateSelect" listener="#{calendarioController.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
             <p:ajax event="eventSelect" listener="#{calendarioController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
