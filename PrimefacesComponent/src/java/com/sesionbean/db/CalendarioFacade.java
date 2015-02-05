@@ -6,7 +6,9 @@
 package com.sesionbean.db;
 
 import com.entidad.jpa.db.Calendario;
+import javax.ejb.DependsOn;
 import javax.ejb.Stateless;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -14,6 +16,8 @@ import javax.persistence.PersistenceContext;
  *
  * @author JCortorreal
  */
+
+
 @Stateless
 public class CalendarioFacade extends AbstractFacade<Calendario> implements CalendarioFacadeLocal {
     @PersistenceContext(unitName = "PrimefacesComponentPU")

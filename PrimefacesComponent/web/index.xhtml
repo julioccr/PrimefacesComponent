@@ -24,7 +24,7 @@
  
     <h:panelGrid columnClasses="value">
         <h3 style="margin-top: 0">Calendario de Evento</h3>
-        <p:schedule id="schedule" value="#{calendarioController.eventModel}" widgetVar="myschedule"    locale="es">
+        <p:schedule id="schedule" value="#{calendarioController.listCalendarioEvento}" widgetVar="myschedule"    locale="es">
  
             <p:ajax event="dateSelect" listener="#{calendarioController.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
             <p:ajax event="eventSelect" listener="#{calendarioController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
@@ -37,23 +37,24 @@
       <p:dialog widgetVar="eventDialog" header="Evento" showEffect="clip" hideEffect="clip">
         <h:panelGrid id="eventDetails" columns="2">
             <h:outputLabel for="evento" value="Evento:" />
-            <p:inputText id="evento" value="#{calendarioController.event.title}" required="true" />
+            <p:inputText id="evento" value="#{calendarioController.calendarioEvento.evento}" required="true" />
  
             <h:outputLabel for="desde" value="Desde:" />
-            <p:inputMask id="desde" value="#{calendarioController.event.startDate}" mask="99/99/9999">
-                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT+2"/>
-            </p:inputMask>
- 
+            <p:calendar id="desde" value="#{calendarioController.calendarioEvento.fechaInicio}" mask="9999-99-99" pattern="yyyy-MM-dd" />
+              
             <h:outputLabel for="hasta" value="Hasta:" />
-            <p:inputMask id="hasta" value="#{calendarioController.event.endDate}" mask="99/99/9999">
-                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT+2"/>
-            </p:inputMask>
+            <p:calendar id="hasta" value="#{calendarioController.calendarioEvento.fechaFinal}" mask="9999-99-99"  pattern="yyyy-MM-dd" />
+             
  
             <h:outputLabel for="allday" value="Todo el Dia:" />
             <h:selectBooleanCheckbox id="allday" value="#{calendarioController.event.allDay}" />
  
+            <h:outputLabel for="descripcion" value="Descripcion:" />
+            <p:inputText id="descripcion" value="#{calendarioController.calendarioEvento.descripcion}" required="false" />
+            
+            
             <p:commandButton type="reset" value="Limpiar Campos" />
-            <p:commandButton id="addButton" value="Guardar Evento" actionListener="#{calendarioController.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+            <p:commandButton id="addButton" value="Guardar Evento" actionListener="#{calendarioController.AgregarEvento}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
         </h:panelGrid>
    
       </p:dialog>    

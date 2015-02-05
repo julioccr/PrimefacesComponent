@@ -7,6 +7,7 @@ package com.controller;
 
 import com.entidad.jpa.db.Calendario;
 import com.sesionbean.db.CalendarioFacade;
+import com.sesionbean.db.CalendarioFacadeLocal;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,9 +16,12 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
  
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
@@ -28,8 +32,10 @@ import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
  
-@ManagedBean
-@ViewScoped
+
+@ManagedBean (name = "calendarioController")
+@RequestScoped
+
 /**
  *
  * @author JCortorreal
@@ -39,8 +45,10 @@ public class calendarioController  implements Serializable{
    
     private Calendario calendarioEvento = new Calendario();
     
-    @EJB 
+    @Inject
     private CalendarioFacade calendarEJB;
+    
+  
     
     private List<Calendario> ListCalendarioEvento;
     
@@ -53,13 +61,10 @@ public class calendarioController  implements Serializable{
  
     @PostConstruct
     public void init() {
-        //eventModel = new DefaultScheduleModel();
         
-        /*eventModel.addEvent(new DefaultScheduleEvent("Proyecto Comerciales Vasquez", previousDay8Pm(), previousDay11Pm()));
-        eventModel.addEvent(new DefaultScheduleEvent("Estudios Traumatologicos", today1Pm(), today6Pm()));
-        eventModel.addEvent(new DefaultScheduleEvent("Conferencia en la UNFE", nextDay9Am(), nextDay11Am()));
-        eventModel.addEvent(new DefaultScheduleEvent("Gestion y Planificacion en Niveles de Seguridad Educacional", theDayAfter3Pm(), fourDaysLater3pm()));
-         */
+           calendarEJB = new CalendarioFacade();
+             calendarEJB.findAll().add(new Calendario(calendarioEvento.getEvento(), calendarioEvento.getFechaInicio(), calendarioEvento.getHoraFinal()));
+ 
         lazyEventModel = new LazyScheduleModel() {
              
             @Override
@@ -194,7 +199,7 @@ public class calendarioController  implements Serializable{
     public void AgregarEvento(ActionEvent actionEvent){
     //si el evento no existe, crearlo entity manager
         FacesMessage  msg ;
-    if(calendarioEvento.getId() == null)
+    if(calendarioEvento.getEvento().isEmpty())
     {
     //procede a crearlo   
     calendarEJB.create(calendarioEvento);
@@ -214,14 +219,17 @@ public class calendarioController  implements Serializable{
     
     //Lista de Evento en el Calendario
 
-    public List<Calendario> getListCalendarioEvento() {
-       
-                return calendarEJB.findAll();
-    }
+    public void getListCalendarioEvento() {
+      calendarEJB = new CalendarioFacade();
+             calendarEJB.findAll().add(new Calendario(calendarioEvento.getEvento(), calendarioEvento.getFechaInicio(), calendarioEvento.getHoraFinal()));
+                }
 
     public void setListCalendarioEvento(List<Calendario> ListCalendarioEvento) {
         this.ListCalendarioEvento = ListCalendarioEvento;
     }
+ 
+    
+    
     
     
     
@@ -261,6 +269,26 @@ public class calendarioController  implements Serializable{
          
         addMessage(message);
     }
+
+    public Calendario getCalendarioEvento() {
+        return calendarioEvento;
+    }
+
+    public void setCalendarioEvento(Calendario calendarioEvento) {
+        this.calendarioEvento = calendarioEvento;
+    }
+
+    public CalendarioFacade getCalendarEJB() {
+        return calendarEJB;
+    }
+
+    public void setCalendarEJB(CalendarioFacade calendarEJB) {
+        this.calendarEJB = calendarEJB;
+    }
+    
+    
+    
+    
      
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);

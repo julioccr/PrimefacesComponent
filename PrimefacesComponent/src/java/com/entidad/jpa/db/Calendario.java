@@ -18,7 +18,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -56,6 +58,7 @@ public class Calendario implements Serializable {
     private String descripcion;
     @Basic(optional = false)
     @NotNull
+    @Past
     @Column(name = "FECHA_INICIO")
     @Temporal(TemporalType.DATE)
     private Date fechaInicio;
@@ -64,6 +67,7 @@ public class Calendario implements Serializable {
     private Date horaInicio;
     @Basic(optional = false)
     @NotNull
+    @Future
     @Column(name = "FECHA_FINAL")
     @Temporal(TemporalType.DATE)
     private Date fechaFinal;
@@ -95,6 +99,12 @@ public class Calendario implements Serializable {
     
     }
 
+     public Calendario (String evento, Date fechaInicio, Date fechaFinal){
+    this.evento = evento;
+    this.fechaInicio = fechaInicio;
+    this.fechaFinal = fechaFinal;
+    
+    }
     public Integer getId() {
         return id;
     }
